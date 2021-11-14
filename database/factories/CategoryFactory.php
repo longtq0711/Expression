@@ -3,16 +3,16 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Menu;
+use App\Models\Category;
 
-class MenuFactory extends Factory
+class CategoryFactory extends Factory
 {
-    /**
+     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Menu::class;
+    protected $model = Category::class;
 
     /**
      * Define the model's default state.
@@ -23,10 +23,7 @@ class MenuFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'description' => $this->faker->paragraphs(2, true),
-            'price' => $this->faker->numberBetween(99, 999),
             'resto_id' => 1,
-            'category_id' => 1
         ];
     }
 }
