@@ -14,8 +14,13 @@ class CreateRestaurantsTable extends Migration
     public function up()
     {
         Schema::create('restaurants', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('location');
+            $table->unsignedBigInteger('owner_id');
             $table->timestamps();
+            $table->foreign('owner_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->index('owner_id');
         });
     }
 
