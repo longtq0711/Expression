@@ -31,7 +31,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/restaurants/menu/{id}', 'MenuController@index')->name('resto.menu');
     Route::get('/restaurants/orders/{id}', 'RestaurantOrderController@index')->name('resto.orders');
     Route::get('/restaurants/orders/{id}/add', 'RestaurantOrderController@add')->name('resto.orders.add');
-    Route::post('/resto', 'RestaurantController@store');
+    Route::post('/restaurants/storeItem', 'RestaurantController@store')->name('resto.storeItem');
     Route::post('/menu-items', 'MenuController@getRestoMenu');
     Route::post('/order/save', 'RestaurantOrderController@store');
     Route::post('/order/complete', 'RestaurantOrderController@complete');

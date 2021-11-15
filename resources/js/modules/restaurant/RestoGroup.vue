@@ -26,31 +26,30 @@
             </div>
           </template>
         </card-component>
-        <!-- <modal name="add-new-resto" height="55%">
+        <modal name="add-new-resto" height="70%">
           <div class="container-padding">
             <RestoAddForm
                 @addRestoEvent="handleSaveResto"
                 @modalCancel="handleCancelResto"
             ></RestoAddForm>
           </div>
-        </modal> -->
+        </modal> 
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import RestoAddForm from './RestoAddForm.vue';
-// import axios from 'axios';
+import RestoAddForm from './RestoAddForm.vue';
+import axios from 'axios';
 
 export default {
   components: {
-    // RestoAddForm
+    RestoAddForm
   },
   props: ['restaurants'],
   created() {
     this.localResto = this.restaurants;
-    console.log(this.localResto);
   },
   computed: {
     showAddForm() {
@@ -70,7 +69,7 @@ export default {
       this.$modal.hide('add-new-resto');
     },
     handleSaveResto(restoData) {
-      axios.post('/api/resto', restoData).then(response => this.localResto.unshift(response.data));
+      axios.post('/restaurants/storeItem', restoData).then(response => this.localResto.unshift(response.data.restaurant));
       this.$modal.hide('add-new-resto');
     }
   }
