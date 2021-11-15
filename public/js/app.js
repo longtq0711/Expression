@@ -2284,6 +2284,7 @@ __webpack_require__.r(__webpack_exports__);
       list.push(key);
     });
     this.categories = list;
+    this.menu = this.categories[0];
     this.localItems = this.items;
   },
   computed: {
@@ -2477,7 +2478,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     showAddForm: function showAddForm() {
-      return this.localResto.length < 5 ? true : false;
+      return this.localResto.length < 6 ? true : false;
     }
   },
   data: function data() {

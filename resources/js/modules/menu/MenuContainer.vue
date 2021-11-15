@@ -67,6 +67,7 @@
                 list.push(key);
             });
             this.categories = list;
+            this.menu = this.categories[0];
             this.localItems = this.items;
         },
         computed: {

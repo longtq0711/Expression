@@ -28,10 +28,10 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/restaurants', 'RestaurantController@index')->name('restos');
-    Route::get('/restaurants/menu/{id}', 'MenuController@index')->name('resto.menu');
-    Route::get('/restaurants/orders/{id}', 'RestaurantOrderController@index')->name('resto.orders');
-    Route::get('/restaurants/orders/{id}/add', 'RestaurantOrderController@add')->name('resto.orders.add');
-    Route::post('/restaurants/storeItem', 'RestaurantController@store')->name('resto.storeItem');
+    Route::get('/restaurants/menu/{id}', 'MenuController@index')->name('restos.menu');
+    Route::get('/restaurants/orders/{id}', 'RestaurantOrderController@index')->name('restos.orders');
+    Route::get('/restaurants/orders/{id}/add', 'RestaurantOrderController@add')->name('restos.orders.add');
+    Route::post('/restaurants/storeItem', 'RestaurantController@store')->name('restos.storeItem');
     Route::post('/menu-items', 'MenuController@getRestoMenu');
     Route::post('/order/save', 'RestaurantOrderController@store');
     Route::post('/order/complete', 'RestaurantOrderController@complete');

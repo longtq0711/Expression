@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     showAddForm() {
-      return (this.localResto.length < 5) ? true : false;
+      return (this.localResto.length < 6) ? true : false;
     }
   },
   data() {

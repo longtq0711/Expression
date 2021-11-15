@@ -10,6 +10,8 @@ class Restaurant extends Model
     use HasFactory;
     protected $table = 'restaurants';
 
+    protected $appends = ['slug'];
+
     protected $fillable = [
         'name',
         'location',
@@ -19,5 +21,10 @@ class Restaurant extends Model
     public function owner() 
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function getSlugAttribute() 
+    {
+        return route('restos.menu', $this->id);
     }
 }

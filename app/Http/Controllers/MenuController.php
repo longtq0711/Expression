@@ -5,9 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Menu;
 use App\Models\Category;
+use App\Services\MenuService;
 
 class MenuController extends Controller
 {
+    public function index($id)
+    {
+        $restoId = $id;
+        $menuService = new MenuService;
+        $menus = $menuService->getMenuWithCategory($restoId);
+
+        return view('menus.index', compact('menus', 'restoId'));        
+    }
+
     public function addMenuItem(Request $request)
     {
         $formData = $request->all();

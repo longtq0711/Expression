@@ -36,3 +36,4 @@ Vue.component('resto-group', require('./modules/restaurant/RestoGroup.vue').defa
 const app = new Vue({
     el: '#app',
 });
+  
