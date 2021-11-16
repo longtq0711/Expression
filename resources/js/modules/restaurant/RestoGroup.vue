@@ -6,9 +6,9 @@
           <template slot="title">{{resto.name}}</template>
           <template slot="body">
             <div class="content-container">
-              <i class="fa fa-map-marker-alt"></i> {{resto.location}}
+              <i class="fa fa-map-marker"></i> {{resto.location}}
               <br>
-              <i class="fa fa-table"></i> {{resto.tables}}
+              <i class="fa fa-table"></i> {{resto.table}}
             </div>
             <a class="card-link" v-bind:href="resto.slug">Menu</a>
             <a class="card-link" v-bind:href="resto.ordersSlug">Orders</a>

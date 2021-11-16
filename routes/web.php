@@ -32,7 +32,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/restaurants/orders/{id}', 'RestaurantOrderController@index')->name('restos.orders');
     Route::get('/restaurants/orders/{id}/add', 'RestaurantOrderController@add')->name('restos.orders.add');
     Route::post('/restaurants/storeItem', 'RestaurantController@store')->name('restos.storeItem');
-    Route::post('/menu-items', 'MenuController@getRestoMenu');
+    Route::get('/order/menu-items', 'MenuController@getRestoMenu');
     Route::post('/order/save', 'RestaurantOrderController@store');
     Route::post('/order/complete', 'RestaurantOrderController@complete');
     Route::post('/order/remove', 'RestaurantOrderController@remove');

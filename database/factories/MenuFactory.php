@@ -25,7 +25,7 @@ class MenuFactory extends Factory
             'name' => $this->faker->word,
             'description' => $this->faker->paragraphs(2, true),
             'price' => $this->faker->numberBetween(99, 999),
-            'resto_id' => 1,
+            'resto_id' => $this->faker->randomElement([1, 2, 3]),
             'category_id' => 1
         ];
     }

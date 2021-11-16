@@ -39,4 +39,20 @@ class MenuController extends Controller
             'menu' => $menu
         ]);
     }
+
+    public function getRestoMenu(Request $request)
+    {
+        $menuItems = Menu::where('resto_id', $request->id)
+            ->orderBy('name')
+            ->orderBy('category_id')
+            ->with('category')
+            ->get();
+
+
+        return response()->json([
+            'status' => 200,
+            'message' => __('Add item successfully!'),
+            'items' => $menuItems
+        ]);
+    }
 }
