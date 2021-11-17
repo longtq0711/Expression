@@ -4,16 +4,19 @@
             <div class="form-group">
                 <label for="">Name</label>
                 <input type="text" class="form-control" v-model="customer.name">
+                <div class="validation-message" v-if="errors.name">{{ errors.name }}</div>
             </div>
             
             <div class="form-group">
                 <label for="">Phone</label>
                 <input type="text" class="form-control" v-model="customer.phone">
+                 <div class="validation-message" v-if="errors.phone">{{ errors.phone }}</div>
             </div>
 
             <div class="form-group">
                 <label for="">Address</label>
                 <input type="text" class="form-control" v-model="customer.address">
+                <div class="validation-message" v-if="errors.address">{{ errors.address }}</div>
             </div>
         </form>
     </div>
@@ -27,7 +30,13 @@ export default {
                 name: '',
                 phone: '',
                 address: ''
-            }
+            },
+        }
+    },
+    props: {
+        errors: {
+            type: Array,
+            required: false
         }
     },
     watch: {

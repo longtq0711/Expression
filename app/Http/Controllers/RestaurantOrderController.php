@@ -73,7 +73,31 @@ class RestaurantOrderController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
 
-        return response()->json($order, 201);
+        return response()->json([
+            'status' => 200,
+            'message' => __('Update order successfully!'),
+        ]);
     }
 
+    public function complete(Request $request) 
+    {
+        $order = Order::find($request->id);
+        $order->isComplete = 1;
+        $order->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => __('Update order successfully!'),
+        ]);
+    }
+
+    public function remove(Request $request) 
+    {
+        $order = Order::where('id', $request->id)->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => __('Remove order successfully!'),
+        ]);
+    }
 }

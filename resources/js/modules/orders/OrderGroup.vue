@@ -9,13 +9,17 @@
         <div class="row">
             <div class="col-md-7">
                 <h3>Customer details</h3>
-                <order-form @customerDetailChanged="handleCustomerDetail"></order-form>
+                <order-form 
+                    @customerDetailChanged="handleCustomerDetail"
+                    :errors="errors"
+                ></order-form>
 
                 <h3>
                     Order details 
                     <span class="float-right" v-if="totalPrice > 0">{{ totalPrice }}</span>
+                    <div class="validation-message" v-if="errors.items">{{ errors.items }}</div>
                 </h3>
-                <order-details :order-details="orderedItems"></order-details>
+                <order-details :items="orderedItems"></order-details>
             </div>
             <div class="col-md-5">
                 <h3 >Menu items</h3>
@@ -50,7 +54,8 @@
                 params: {
                     id: ''
                 },
-                customerDetails: []
+                customerDetails: [],
+                errors: []
             }
         },
         created() {
@@ -58,6 +63,7 @@
             window.eventBus.$on('addMenuItem', this.handleNewItem)
             window.eventBus.$on('filteredList', this.handlefilterSearch);
             window.eventBus.$on('clearfilteredList', this.clearfilterSearch);          
+            window.eventBus.$on("removeOrderedItem", this.handleRemoveOrderedItem);
         },
         computed: {
            totalPrice() {
@@ -69,7 +75,23 @@
            }
         },
         methods: {
-             loadRestoMenuItems() {
+            checkValid() {
+                let scop = this;
+                scop.errors = [];
+                if (!scop.customerDetails.name) {
+                    scop.errors['name'] = 'Name is required';
+                }
+                if (!scop.customerDetails.phone) {
+                    scop.errors['phone'] = 'Phone number is required';
+                }
+                if (!scop.customerDetails.address) {
+                    scop.errors['address'] = 'Address is required';
+                }
+                if (scop.totalPrice == 0) {
+                    scop.errors['items'] = 'Please choose one item to order';
+                }
+            },
+            loadRestoMenuItems() {
                 let scop = this;
                 scop.params.id = scop.restoId;    
                 scop.$loading(true);
@@ -102,7 +124,6 @@
                 this.orderedItems.forEach(item => {
                     orderedItemsIds.push(item.id);
                 });
-                console.log(this.customerDetails);
                 let orderData = {
                     resto_id: this.restoId,
                     order_data: {
@@ -111,7 +132,24 @@
                         orderedItems: orderedItemsIds
                     }
                 };
-                axios.post('/order/save', orderData).then(response => console.log(response)).catch(error => console.log(error));
+                this.checkValid();
+                if (Object.keys(this.errors).length === 0) {
+                    axios.post('/order/save', orderData).then(function(response) {
+                        if(response.status == 200) {
+                            Swal.fire({
+                            icon: 'success',
+                            title: '',
+                            text: response.data.message,
+                            }).then((result) => {
+                                window.location.reload();
+                            })
+                        }
+                    }).catch(error => console.log(error));
+
+                }
+            },
+            handleRemoveOrderedItem(item) {
+                this.orderedItems = this.orderedItems.filter(orderedItem => orderedItem.id != item.id);
             }
         }
     }

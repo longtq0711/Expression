@@ -20,6 +20,14 @@
 </template>
 <script>
     export default {
-        props: ['orders']
+        props: ['orders'],
+        methods: {
+            clickComplete(order) {
+                this.$emit('completeOrder', order);
+            }, 
+            clickDelete(order) {
+                this.$emit('removeOrder', order);
+            }
+        }
     }
 </script>

@@ -8,8 +8,11 @@ require('./bootstrap');
 require('vue-multiselect/dist/vue-multiselect.min.css');
 import VModal from 'vue-js-modal';
 import VueLoading from 'vuejs-loading-plugin'
+import Swal from 'sweetalert2'
 
 window.Vue = require('vue').default;
+window.Swal = require('sweetalert2');
+
 
 Vue.use(VModal);
 Vue.use(VueLoading);
