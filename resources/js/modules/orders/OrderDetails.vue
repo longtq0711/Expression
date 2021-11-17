@@ -8,7 +8,7 @@
             </ul>
         </div>
         <div v-else>
-        <p>No items ordered yet</p>
+            <p>No items ordered yet</p>
         </div>
     </div>
 </template>

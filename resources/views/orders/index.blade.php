@@ -14,8 +14,8 @@
             <div class="mb-3 float-right">
                 <a href="{{ route('restos.orders.add', $resto->id) }}" class="btn btn-primary">Add Order</a>
             </div>
-            <!-- <manage-orders :orders="{{ json_encode($orders) }}"></manage-orders> -->
-            <table class="table table-hover table-bordered table-striped">
+            <manage-orders :orders="{{ json_encode($orders) }}"></manage-orders>
+            <!-- <table class="table table-hover table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Order Id</th>
@@ -41,7 +41,7 @@
                         </tr>
                     @endforeach
                 </tbody>
-            </table> 
+            </table>  -->
             {{$orders->render()}}
             @else
                 <p>You don't have any orders yet. Click <a href="{{route('restos.orders.add', $resto->id)}}">here</a> to add</p>
