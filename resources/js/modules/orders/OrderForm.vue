@@ -12,8 +12,8 @@
             </div>
 
             <div class="form-group">
-                <label for="">Email</label>
-                <input type="text" class="form-control" v-model="customer.email">
+                <label for="">Address</label>
+                <input type="text" class="form-control" v-model="customer.address">
             </div>
         </form>
     </div>
@@ -26,8 +26,20 @@ export default {
             customer: {
                 name: '',
                 phone: '',
-                email: ''
+                address: ''
             }
+        }
+    },
+    watch: {
+        customer: {
+            handler(value) {
+                let customer = {
+                    name: value.name,
+                    phone: value.phone,
+                    address: value.address
+                }
+                this.$emit('customerDetailChanged', customer)
+            }, deep: true
         }
     }
 }

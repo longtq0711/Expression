@@ -2495,9 +2495,22 @@ __webpack_require__.r(__webpack_exports__);
       customer: {
         name: '',
         phone: '',
-        email: ''
+        address: ''
       }
     };
+  },
+  watch: {
+    customer: {
+      handler: function handler(value) {
+        var customer = {
+          name: value.name,
+          phone: value.phone,
+          address: value.address
+        };
+        this.$emit('customerDetailChanged', customer);
+      },
+      deep: true
+    }
   }
 });
 
@@ -2542,6 +2555,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2560,7 +2581,8 @@ __webpack_require__.r(__webpack_exports__);
       originMenuItems: [],
       params: {
         id: ''
-      }
+      },
+      customerDetails: []
     };
   },
   created: function created() {
@@ -2603,6 +2625,29 @@ __webpack_require__.r(__webpack_exports__);
     },
     clearfilterSearch: function clearfilterSearch() {
       this.menuItems = this.originMenuItems;
+    },
+    handleCustomerDetail: function handleCustomerDetail(customer) {
+      this.customerDetails = customer;
+    },
+    handleOrderSave: function handleOrderSave() {
+      var orderedItemsIds = [];
+      this.orderedItems.forEach(function (item) {
+        orderedItemsIds.push(item.id);
+      });
+      console.log(this.customerDetails);
+      var orderData = {
+        resto_id: this.restoId,
+        order_data: {
+          customerDetails: this.customerDetails,
+          totalPrice: this.totalPrice,
+          orderedItems: orderedItemsIds
+        }
+      };
+      axios__WEBPACK_IMPORTED_MODULE_3___default().post('/order/save', orderData).then(function (response) {
+        return console.log(response);
+      })["catch"](function (error) {
+        return console.log(error);
+      });
     }
   }
 });
@@ -40467,26 +40512,26 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Email")]),
+        _c("label", { attrs: { for: "" } }, [_vm._v("Address")]),
         _vm._v(" "),
         _c("input", {
           directives: [
             {
               name: "model",
               rawName: "v-model",
-              value: _vm.customer.email,
-              expression: "customer.email",
+              value: _vm.customer.address,
+              expression: "customer.address",
             },
           ],
           staticClass: "form-control",
           attrs: { type: "text" },
-          domProps: { value: _vm.customer.email },
+          domProps: { value: _vm.customer.address },
           on: {
             input: function ($event) {
               if ($event.target.composing) {
                 return
               }
-              _vm.$set(_vm.customer, "email", $event.target.value)
+              _vm.$set(_vm.customer, "address", $event.target.value)
             },
           },
         }),
@@ -40517,42 +40562,59 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row" }, [
-    _c(
-      "div",
-      { staticClass: "col-md-7" },
-      [
-        _c("h3", [_vm._v("Customer details")]),
-        _vm._v(" "),
-        _c("order-form"),
-        _vm._v(" "),
-        _c("h3", [
-          _vm._v("\n            Order details \n            "),
-          _vm.totalPrice > 0
-            ? _c("span", { staticClass: "float-right" }, [
-                _vm._v(_vm._s(_vm.totalPrice)),
-              ])
-            : _vm._e(),
-        ]),
-        _vm._v(" "),
-        _c("order-details", { attrs: { "order-details": _vm.orderedItems } }),
-      ],
-      1
-    ),
+  return _c("div", { staticClass: "wrapper" }, [
+    _c("div", { staticClass: "row mb-3" }, [
+      _c("div", { staticClass: "col-md-12" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success float-right",
+            on: { click: _vm.handleOrderSave },
+          },
+          [_vm._v("Save")]
+        ),
+      ]),
+    ]),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "col-md-5" },
-      [
-        _c("h3", [_vm._v("Menu items")]),
-        _vm._v(" "),
-        _c("order-menu-items", {
-          attrs: { items: _vm.menuItems },
-          on: { addMenuItem: _vm.handleNewItem },
-        }),
-      ],
-      1
-    ),
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col-md-7" },
+        [
+          _c("h3", [_vm._v("Customer details")]),
+          _vm._v(" "),
+          _c("order-form", {
+            on: { customerDetailChanged: _vm.handleCustomerDetail },
+          }),
+          _vm._v(" "),
+          _c("h3", [
+            _vm._v("\n                Order details \n                "),
+            _vm.totalPrice > 0
+              ? _c("span", { staticClass: "float-right" }, [
+                  _vm._v(_vm._s(_vm.totalPrice)),
+                ])
+              : _vm._e(),
+          ]),
+          _vm._v(" "),
+          _c("order-details", { attrs: { "order-details": _vm.orderedItems } }),
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-md-5" },
+        [
+          _c("h3", [_vm._v("Menu items")]),
+          _vm._v(" "),
+          _c("order-menu-items", {
+            attrs: { items: _vm.menuItems },
+            on: { addMenuItem: _vm.handleNewItem },
+          }),
+        ],
+        1
+      ),
+    ]),
   ])
 }
 var staticRenderFns = []

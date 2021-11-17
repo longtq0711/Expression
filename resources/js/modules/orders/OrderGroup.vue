@@ -1,22 +1,30 @@
 <template>
-    <div class="row">
-        <div class="col-md-7">
-            <h3>Customer details</h3>
-            <order-form></order-form>
-
-            <h3>
-                Order details 
-                <span class="float-right" v-if="totalPrice > 0">{{ totalPrice }}</span>
-            </h3>
-            <order-details :order-details="orderedItems"></order-details>
+    <div class="wrapper">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <button @click="handleOrderSave" class="btn btn-success float-right">Save</button>
+            </div>
         </div>
-        <div class="col-md-5">
-            <h3 >Menu items</h3>
-            
-            <order-menu-items 
-                :items="menuItems"
-                @addMenuItem="handleNewItem"
-            ></order-menu-items> 
+
+        <div class="row">
+            <div class="col-md-7">
+                <h3>Customer details</h3>
+                <order-form @customerDetailChanged="handleCustomerDetail"></order-form>
+
+                <h3>
+                    Order details 
+                    <span class="float-right" v-if="totalPrice > 0">{{ totalPrice }}</span>
+                </h3>
+                <order-details :order-details="orderedItems"></order-details>
+            </div>
+            <div class="col-md-5">
+                <h3 >Menu items</h3>
+                
+                <order-menu-items 
+                    :items="menuItems"
+                    @addMenuItem="handleNewItem"
+                ></order-menu-items> 
+            </div>
         </div>
     </div>
 </template>
@@ -42,6 +50,7 @@
                 params: {
                     id: ''
                 },
+                customerDetails: []
             }
         },
         created() {
@@ -84,6 +93,25 @@
             },
             clearfilterSearch() {
                 this.menuItems = this.originMenuItems;
+            },
+            handleCustomerDetail(customer) {
+                this.customerDetails = customer;
+            },
+            handleOrderSave() {
+                let orderedItemsIds = [];
+                this.orderedItems.forEach(item => {
+                    orderedItemsIds.push(item.id);
+                });
+                console.log(this.customerDetails);
+                let orderData = {
+                    resto_id: this.restoId,
+                    order_data: {
+                        customerDetails: this.customerDetails,
+                        totalPrice: this.totalPrice,
+                        orderedItems: orderedItemsIds
+                    }
+                };
+                axios.post('/order/save', orderData).then(response => console.log(response)).catch(error => console.log(error));
             }
         }
     }
