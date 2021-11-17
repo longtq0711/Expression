@@ -34,9 +34,19 @@ export default {
         }
     },
     props: {
+        customerDetails: {
+            type: [Array, Object], 
+        },
         errors: {
             type: Array,
             required: false
+        }
+    },
+    created() {
+        if (this.customerDetails) {
+            this.customer.name = this.customerDetails.customer_name;
+            this.customer.phone = this.customerDetails.customer_phone;
+            this.customer.address = this.customerDetails.customer_address;
         }
     },
     watch: {

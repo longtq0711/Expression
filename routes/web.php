@@ -30,10 +30,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/restaurants', 'RestaurantController@index')->name('restos');
     Route::get('/restaurants/menu/{id}', 'MenuController@index')->name('restos.menu');
     Route::get('/restaurants/orders/{id}', 'RestaurantOrderController@index')->name('restos.orders');
-    Route::get('/restaurants/orders/{id}/add', 'RestaurantOrderController@add')->name('restos.orders.add');
+    Route::get('/restaurants/{resto_id}/orders/add', 'RestaurantOrderController@add')->name('restos.orders.add');
+    Route::get('/restaurants/{resto_id}/orders/{order_id}/edit', 'RestaurantOrderController@edit')->name('restos.orders.edit');
     Route::post('/restaurants/storeItem', 'RestaurantController@store')->name('restos.storeItem');
     Route::get('/order/menu-items', 'MenuController@getRestoMenu');
     Route::post('/order/save', 'RestaurantOrderController@store');
+    Route::post('/order/{id}/edit', 'RestaurantOrderController@update');
     Route::post('/order/complete', 'RestaurantOrderController@complete');
     Route::post('/order/remove', 'RestaurantOrderController@remove');
     Route::post('/menus/saveItem', 'MenuController@addMenuItem')->name('menus.saveItems');

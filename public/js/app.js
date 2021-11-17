@@ -2112,6 +2112,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['orders'],
   methods: {
@@ -2120,6 +2121,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     clickDelete: function clickDelete(order) {
       this.$emit('removeOrder', order);
+    },
+    clickEdit: function clickEdit(order) {
+      return window.location.href = "/restaurants/" + 1 + "/orders/" + order.id + "/edit";
     }
   }
 });
@@ -2673,9 +2677,19 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   props: {
+    customerDetails: {
+      type: [Array, Object]
+    },
     errors: {
       type: Array,
       required: false
+    }
+  },
+  created: function created() {
+    if (this.customerDetails) {
+      this.customer.name = this.customerDetails.customer_name;
+      this.customer.phone = this.customerDetails.customer_phone;
+      this.customer.address = this.customerDetails.customer_address;
     }
   },
   watch: {
@@ -2746,6 +2760,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 
@@ -2756,7 +2771,15 @@ __webpack_require__.r(__webpack_exports__);
     OrderMenuItems: _OrderMenuItems_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
     OrderDetails: _OrderDetails_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
-  props: ['restoId'],
+  props: {
+    restoId: {
+      type: Number,
+      required: true
+    },
+    orders: {
+      type: Object
+    }
+  },
   data: function data() {
     return {
       menuItems: [],
@@ -2775,6 +2798,10 @@ __webpack_require__.r(__webpack_exports__);
     window.eventBus.$on('filteredList', this.handlefilterSearch);
     window.eventBus.$on('clearfilteredList', this.clearfilterSearch);
     window.eventBus.$on("removeOrderedItem", this.handleRemoveOrderedItem);
+
+    if (this.orders) {
+      this.customerDetails = this.orders.order_details;
+    }
   },
   computed: {
     totalPrice: function totalPrice() {
@@ -2816,6 +2843,17 @@ __webpack_require__.r(__webpack_exports__);
         if (response.data.status === 200) {
           scop.menuItems = response.data.items;
           scop.originMenuItems = response.data.items;
+
+          if (scop.orders) {
+            scop.orders.order_details.items.forEach(function (orderItem) {
+              scop.menuItems.forEach(function (menuItem) {
+                if (orderItem === menuItem.id) {
+                  scop.orderedItems.push(menuItem);
+                }
+              });
+            });
+          }
+
           scop.$loading(false);
         }
       })["catch"](function (error) {
@@ -2850,19 +2888,35 @@ __webpack_require__.r(__webpack_exports__);
       this.checkValid();
 
       if (Object.keys(this.errors).length === 0) {
-        axios__WEBPACK_IMPORTED_MODULE_3___default().post('/order/save', orderData).then(function (response) {
-          if (response.status == 200) {
-            Swal.fire({
-              icon: 'success',
-              title: '',
-              text: response.data.message
-            }).then(function (result) {
-              window.location.reload();
-            });
-          }
-        })["catch"](function (error) {
-          return console.log(error);
-        });
+        if (this.orders) {
+          axios__WEBPACK_IMPORTED_MODULE_3___default().post('/order/' + this.orders.id + '/edit', orderData).then(function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: 'success',
+                title: '',
+                text: response.data.message
+              }).then(function (result) {
+                window.location.reload();
+              });
+            }
+          })["catch"](function (error) {
+            return console.log(error);
+          });
+        } else {
+          axios__WEBPACK_IMPORTED_MODULE_3___default().post('/order/save', orderData).then(function (response) {
+            if (response.status == 200) {
+              Swal.fire({
+                icon: 'success',
+                title: '',
+                text: response.data.message
+              }).then(function (result) {
+                window.location.href = "/restaurants/" + 1 + "/orders/" + response.data.id + "/edit";
+              });
+            }
+          })["catch"](function (error) {
+            return console.log(error);
+          });
+        }
       }
     },
     handleRemoveOrderedItem: function handleRemoveOrderedItem(item) {
@@ -43582,6 +43636,19 @@ var render = function () {
           _c(
             "button",
             {
+              staticClass: "btn btn-primary mr-3",
+              on: {
+                click: function ($event) {
+                  return _vm.clickEdit(order)
+                },
+              },
+            },
+            [_vm._v("✐")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
               staticClass: "btn btn-success mr-3",
               on: {
                 click: function ($event) {
@@ -43598,7 +43665,7 @@ var render = function () {
               staticClass: "btn btn-warning",
               on: {
                 click: function ($event) {
-                  return _vm.clickDelete(order)
+                  return _vm.clickEdit(order)
                 },
               },
             },
@@ -44351,7 +44418,10 @@ var render = function () {
           _c("h3", [_vm._v("Customer details")]),
           _vm._v(" "),
           _c("order-form", {
-            attrs: { errors: _vm.errors },
+            attrs: {
+              "customer-details": _vm.customerDetails,
+              errors: _vm.errors,
+            },
             on: { customerDetailChanged: _vm.handleCustomerDetail },
           }),
           _vm._v(" "),

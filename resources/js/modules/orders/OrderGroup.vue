@@ -10,6 +10,7 @@
             <div class="col-md-7">
                 <h3>Customer details</h3>
                 <order-form 
+                    :customer-details="customerDetails"
                     @customerDetailChanged="handleCustomerDetail"
                     :errors="errors"
                 ></order-form>
@@ -45,7 +46,15 @@
             OrderMenuItems,
             OrderDetails,
         },
-        props: ['restoId'],
+        props: {
+            restoId: {
+                type: Number,
+                required: true,
+            },
+            orders: {
+                type: Object
+            }
+        },
         data() {
             return {
                 menuItems: [],
@@ -64,6 +73,9 @@
             window.eventBus.$on('filteredList', this.handlefilterSearch);
             window.eventBus.$on('clearfilteredList', this.clearfilterSearch);          
             window.eventBus.$on("removeOrderedItem", this.handleRemoveOrderedItem);
+            if (this.orders) {
+                this.customerDetails = this.orders.order_details;               
+            }
         },
         computed: {
            totalPrice() {
@@ -101,6 +113,15 @@
                     if (response.data.status === 200) {
                         scop.menuItems = response.data.items;
                         scop.originMenuItems = response.data.items;
+                        if (scop.orders) {
+                            scop.orders.order_details.items.forEach(orderItem => {
+                                scop.menuItems.forEach(menuItem => {
+                                    if (orderItem === menuItem.id) {
+                                        scop.orderedItems.push(menuItem);
+                                    }
+                                })
+                            })         
+                        }
                         scop.$loading(false);
                     }
                 }).catch(function (error) {
@@ -134,18 +155,31 @@
                 };
                 this.checkValid();
                 if (Object.keys(this.errors).length === 0) {
-                    axios.post('/order/save', orderData).then(function(response) {
-                        if(response.status == 200) {
-                            Swal.fire({
-                            icon: 'success',
-                            title: '',
-                            text: response.data.message,
-                            }).then((result) => {
-                                window.location.reload();
-                            })
-                        }
-                    }).catch(error => console.log(error));
-
+                    if (this.orders) {
+                        axios.post('/order/' + this.orders.id + '/edit', orderData).then(function(response) {
+                            if(response.status == 200) {
+                                Swal.fire({
+                                icon: 'success',
+                                title: '',
+                                text: response.data.message,
+                                }).then((result) => {
+                                    window.location.reload();
+                                })
+                            }
+                        }).catch(error => console.log(error));
+                    } else {
+                        axios.post('/order/save', orderData).then(function(response) {
+                            if(response.status == 200) {
+                                Swal.fire({
+                                icon: 'success',
+                                title: '',
+                                text: response.data.message,
+                                }).then((result) => {
+                                    window.location.href = "/restaurants/" + 1 + "/orders/" + response.data.id +"/edit";
+                                })
+                            }
+                        }).catch(error => console.log(error));
+                    }   
                 }
             },
             handleRemoveOrderedItem(item) {

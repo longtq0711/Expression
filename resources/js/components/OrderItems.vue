@@ -12,8 +12,9 @@
                 Address: {{order.order_details.customer_address}}
             </td>
             <td>
+                <button class="btn btn-primary mr-3" @click="clickEdit(order)">✐</button>
                 <button class="btn btn-success mr-3" @click="clickComplete(order)">✔</button>
-                <button class="btn btn-warning" @click="clickDelete(order)">✘</button>
+                <button class="btn btn-warning" @click="clickEdit(order)">✘</button>
             </td>
         </tr>
     </tbody>
@@ -27,6 +28,9 @@
             }, 
             clickDelete(order) {
                 this.$emit('removeOrder', order);
+            },
+            clickEdit(order) {
+                return window.location.href = "/restaurants/" + 1 + "/orders/" + order.id +"/edit";
             }
         }
     }

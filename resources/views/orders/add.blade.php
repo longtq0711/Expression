@@ -8,10 +8,13 @@
             <hr>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-12">
-            <order-group :resto-id="{{$resto->id}}"></order-group>
+            @if(!isset($order))
+                <order-group :resto-id="{{$resto->id}}"></order-group>
+            @else
+                <order-group :resto-id="{{$resto->id}}" :orders="{{ json_encode($order) }}"></order-group>
+            @endif
         </div>
     </div>
 </div>
