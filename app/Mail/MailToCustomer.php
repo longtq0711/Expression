@@ -7,12 +7,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MailToUser extends Mailable
+class MailToCustomer extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $detail;
-    protected $user;
+    protected $orders;
 
     /**
      * Create a new message instance.
@@ -20,10 +19,9 @@ class MailToUser extends Mailable
       * @return void
      */
     
-    public function __construct($detail, $user)
+    public function __construct($orders)
     {
-        $this->detail = $detail;
-        $this->user = $user;
+        $this->orders = $orders;
     }
 
     /**
@@ -33,7 +31,7 @@ class MailToUser extends Mailable
      */
     public function build()
     {
-        $detail = $this->detail;
-        return $this->from($this->user->email_group, $this->user->name)->subject($this->detail['title'])->view('mails.editMail', compact('detail'));
+        $orders = $this->orders;
+        return $this->from('qlonga2k44@gmail.com')->subject('Complete order')->view('mails.mail-notify', compact('orders'));
     }
 }

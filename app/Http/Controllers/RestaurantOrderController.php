@@ -8,6 +8,8 @@ use App\Models\Order;
 use App\Models\Menu;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Jobs\SendMail;
+use Carbon\Carbon;
 
 class RestaurantOrderController extends Controller
 {
@@ -84,7 +86,7 @@ class RestaurantOrderController extends Controller
 
         return response()->json([
             'status' => 200,
-            'message' => __('Update order successfully!'),
+            'message' => __('Add new order successfully!'),
             'id' => $order->id,
         ]);
     }
@@ -141,9 +143,26 @@ class RestaurantOrderController extends Controller
 
     public function complete(Request $request) 
     {
-        $order = Order::find($request->id);
+        $formData = $request->order;
+        $order = Order::find($formData['id']);
         $order->isComplete = 1;
         $order->save();
+
+        $data['amount'] = $formData['amount'];
+        $user = $formData['order_details']['customer_email'];
+        $data['order'] = [];
+
+        foreach($formData['order_details']['items'] as $item) {
+            $menu = Menu::find($item);
+            $order = [
+                'name' => $menu->name,
+                'category' => $menu->category->name,
+                'price' => $menu->price
+            ];
+            array_push($data['order'], $order);
+        }
+    
+        SendMail::dispatch($data, $user)->delay(Carbon::now()->addMinutes(1));
 
         return response()->json([
             'status' => 200,

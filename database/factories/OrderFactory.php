@@ -14,7 +14,7 @@ class OrderFactory extends Factory
     public function definition()
     {
         return [
-            'resto_id' => 1,
+            'resto_id' => $this->faker->randomElement([1,2,3]),
             'user_id' => 1,
             'amount' => $this->faker->numberBetween(99, 500),
             'isComplete' => $this->faker->randomElement([1,0]),
@@ -24,6 +24,7 @@ class OrderFactory extends Factory
                 'customer_name' => $this->faker->name,
                 'customer_phone' => $this->faker->phoneNumber,
                 'customer_address' => $this->faker->address,
+                'customer_email' => $this->faker->email,
             ]
         ];
     }

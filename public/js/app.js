@@ -2113,8 +2113,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['orders'],
+  props: ['orders', 'restoId'],
   methods: {
     clickComplete: function clickComplete(order) {
       this.$emit('completeOrder', order);
@@ -2123,7 +2125,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit('removeOrder', order);
     },
     clickEdit: function clickEdit(order) {
-      return window.location.href = "/restaurants/" + 1 + "/orders/" + order.id + "/edit";
+      return window.location.href = "/restaurants/" + this.restoId + "/orders/" + order.id + "/edit";
     }
   }
 });
@@ -2421,12 +2423,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
     OrderItems: _components_OrderItems_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ['orders'],
+  props: ['orders', 'restoId'],
   data: function data() {
     return {
       orderData: []
@@ -2437,8 +2440,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     handleCompleteOrder: function handleCompleteOrder(order) {
-      var orderId = {
-        id: order.id
+      var orderItem = {
+        order: order
       };
       var scop = this;
       Swal.fire({
@@ -2449,7 +2452,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonColor: '#d33'
       }).then(function (result) {
         if (result.value) {
-          axios.post('/order/complete', orderId).then(function (response) {
+          axios.post('/order/complete', orderItem).then(function (response) {
             if (response.status == 200) {
               Swal.fire({
                 icon: 'success',
@@ -2488,9 +2491,7 @@ __webpack_require__.r(__webpack_exports__);
               title: '',
               text: response.data.message
             }).then(function (result) {
-              scop.orderData = scop.orderData.filter(function (localOrder) {
-                return localOrder.id !== order.id;
-              });
+              window.location.reload();
             });
           })["catch"](function (error) {
             console.log(error);
@@ -2666,13 +2667,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       customer: {
         name: '',
         phone: '',
-        address: ''
+        address: '',
+        email: ''
       }
     };
   },
@@ -2690,6 +2698,7 @@ __webpack_require__.r(__webpack_exports__);
       this.customer.name = this.customerDetails.customer_name;
       this.customer.phone = this.customerDetails.customer_phone;
       this.customer.address = this.customerDetails.customer_address;
+      this.customer.email = this.customerDetails.customer_email;
     }
   },
   watch: {
@@ -2698,7 +2707,8 @@ __webpack_require__.r(__webpack_exports__);
         var customer = {
           name: value.name,
           phone: value.phone,
-          address: value.address
+          address: value.address,
+          email: value.email
         };
         this.$emit('customerDetailChanged', customer);
       },
@@ -2829,6 +2839,10 @@ __webpack_require__.r(__webpack_exports__);
         scop.errors['address'] = 'Address is required';
       }
 
+      if (!scop.customerDetails.email) {
+        scop.errors['email'] = 'Email is required';
+      }
+
       if (scop.totalPrice == 0) {
         scop.errors['items'] = 'Please choose one item to order';
       }
@@ -2874,11 +2888,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     handleOrderSave: function handleOrderSave() {
       var orderedItemsIds = [];
+      var restoId = this.restoId;
       this.orderedItems.forEach(function (item) {
         orderedItemsIds.push(item.id);
       });
       var orderData = {
-        resto_id: this.restoId,
+        resto_id: restoId,
         order_data: {
           customerDetails: this.customerDetails,
           totalPrice: this.totalPrice,
@@ -2910,7 +2925,7 @@ __webpack_require__.r(__webpack_exports__);
                 title: '',
                 text: response.data.message
               }).then(function (result) {
-                window.location.href = "/restaurants/" + 1 + "/orders/" + response.data.id + "/edit";
+                window.location.href = "/restaurants/" + restoId + "/orders/" + response.data.id + "/edit";
               });
             }
           })["catch"](function (error) {
@@ -43628,6 +43643,12 @@ var render = function () {
           _vm._v(
             "\n            Address: " +
               _vm._s(order.order_details.customer_address) +
+              "\n            "
+          ),
+          _c("br"),
+          _vm._v(
+            "\n            Emaill: " +
+              _vm._s(order.order_details.customer_email) +
               "\n        "
           ),
         ]),
@@ -43646,18 +43667,20 @@ var render = function () {
             [_vm._v("✐")]
           ),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-success mr-3",
-              on: {
-                click: function ($event) {
-                  return _vm.clickComplete(order)
+          order.isComplete != 1
+            ? _c(
+                "button",
+                {
+                  staticClass: "btn btn-success mr-3",
+                  on: {
+                    click: function ($event) {
+                      return _vm.clickComplete(order)
+                    },
+                  },
                 },
-              },
-            },
-            [_vm._v("✔")]
-          ),
+                [_vm._v("✔")]
+              )
+            : _vm._e(),
           _vm._v(" "),
           _c(
             "button",
@@ -43665,7 +43688,7 @@ var render = function () {
               staticClass: "btn btn-warning",
               on: {
                 click: function ($event) {
-                  return _vm.clickEdit(order)
+                  return _vm.clickDelete(order)
                 },
               },
             },
@@ -44052,7 +44075,7 @@ var render = function () {
       _vm._m(0),
       _vm._v(" "),
       _c("order-items", {
-        attrs: { orders: _vm.orderData },
+        attrs: { orders: _vm.orderData, "resto-id": _vm.restoId },
         on: {
           completeOrder: _vm.handleCompleteOrder,
           removeOrder: _vm.handleRemoveOrder,
@@ -44276,7 +44299,7 @@ var render = function () {
   return _c("div", { staticClass: "wrapper" }, [
     _c("form", { attrs: { action: "#" } }, [
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Name")]),
+        _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
         _vm._v(" "),
         _c("input", {
           directives: [
@@ -44288,7 +44311,7 @@ var render = function () {
             },
           ],
           staticClass: "form-control",
-          attrs: { type: "text" },
+          attrs: { type: "text", id: "name" },
           domProps: { value: _vm.customer.name },
           on: {
             input: function ($event) {
@@ -44308,7 +44331,7 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Phone")]),
+        _c("label", { attrs: { for: "phone" } }, [_vm._v("Phone")]),
         _vm._v(" "),
         _c("input", {
           directives: [
@@ -44320,7 +44343,7 @@ var render = function () {
             },
           ],
           staticClass: "form-control",
-          attrs: { type: "text" },
+          attrs: { type: "text", id: "phone" },
           domProps: { value: _vm.customer.phone },
           on: {
             input: function ($event) {
@@ -44340,7 +44363,7 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Address")]),
+        _c("label", { attrs: { for: "address" } }, [_vm._v("Address")]),
         _vm._v(" "),
         _c("input", {
           directives: [
@@ -44352,7 +44375,7 @@ var render = function () {
             },
           ],
           staticClass: "form-control",
-          attrs: { type: "text" },
+          attrs: { type: "text", id: "address" },
           domProps: { value: _vm.customer.address },
           on: {
             input: function ($event) {
@@ -44367,6 +44390,38 @@ var render = function () {
         _vm.errors.address
           ? _c("div", { staticClass: "validation-message" }, [
               _vm._v(_vm._s(_vm.errors.address)),
+            ])
+          : _vm._e(),
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group" }, [
+        _c("label", { attrs: { for: "email" } }, [_vm._v("Email")]),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.customer.email,
+              expression: "customer.email",
+            },
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text", id: "email" },
+          domProps: { value: _vm.customer.email },
+          on: {
+            input: function ($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.$set(_vm.customer, "email", $event.target.value)
+            },
+          },
+        }),
+        _vm._v(" "),
+        _vm.errors.email
+          ? _c("div", { staticClass: "validation-message" }, [
+              _vm._v(_vm._s(_vm.errors.email)),
             ])
           : _vm._e(),
       ]),

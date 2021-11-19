@@ -57,6 +57,13 @@ class MenuSeeder extends Seeder
             'category_id' => 1,
             'description' => 'Fusion Soup with Coconut and Seafood mix.',
         ]);
+
+        Menu::factory()->create([
+            'name' => 'Pumpkins Soup',
+            'price' => 120,
+            'category_id' => 1,
+            'description' => 'Fusion Soup with Coconut and Seafood mix.',
+        ]);
     }
 
     private function addMainCourse()

@@ -99,6 +99,9 @@
                 if (!scop.customerDetails.address) {
                     scop.errors['address'] = 'Address is required';
                 }
+                if (!scop.customerDetails.email) {
+                    scop.errors['email'] = 'Email is required';
+                }
                 if (scop.totalPrice == 0) {
                     scop.errors['items'] = 'Please choose one item to order';
                 }
@@ -142,11 +145,12 @@
             },
             handleOrderSave() {
                 let orderedItemsIds = [];
+                let restoId = this.restoId;
                 this.orderedItems.forEach(item => {
                     orderedItemsIds.push(item.id);
                 });
                 let orderData = {
-                    resto_id: this.restoId,
+                    resto_id: restoId,
                     order_data: {
                         customerDetails: this.customerDetails,
                         totalPrice: this.totalPrice,
@@ -175,7 +179,7 @@
                                 title: '',
                                 text: response.data.message,
                                 }).then((result) => {
-                                    window.location.href = "/restaurants/" + 1 + "/orders/" + response.data.id +"/edit";
+                                    window.location.href = "/restaurants/" + restoId + "/orders/" + response.data.id +"/edit";
                                 })
                             }
                         }).catch(error => console.log(error));

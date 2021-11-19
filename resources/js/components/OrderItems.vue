@@ -10,18 +10,20 @@
                 Phone: {{order.order_details.customer_phone}}
                 <br>
                 Address: {{order.order_details.customer_address}}
+                <br>
+                Emaill: {{order.order_details.customer_email}}
             </td>
             <td>
                 <button class="btn btn-primary mr-3" @click="clickEdit(order)">✐</button>
-                <button class="btn btn-success mr-3" @click="clickComplete(order)">✔</button>
-                <button class="btn btn-warning" @click="clickEdit(order)">✘</button>
+                <button class="btn btn-success mr-3" @click="clickComplete(order)"  v-if="order.isComplete != 1">✔</button>
+                <button class="btn btn-warning" @click="clickDelete(order)">✘</button>
             </td>
         </tr>
     </tbody>
 </template>
 <script>
     export default {
-        props: ['orders'],
+        props: ['orders', 'restoId'],
         methods: {
             clickComplete(order) {
                 this.$emit('completeOrder', order);
@@ -30,7 +32,7 @@
                 this.$emit('removeOrder', order);
             },
             clickEdit(order) {
-                return window.location.href = "/restaurants/" + 1 + "/orders/" + order.id +"/edit";
+                return window.location.href = "/restaurants/" + this.restoId + "/orders/" + order.id +"/edit";
             }
         }
     }

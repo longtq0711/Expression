@@ -11,6 +11,7 @@
         </thead>
         <order-items 
             :orders="orderData"
+            :resto-id="restoId"
             @completeOrder="handleCompleteOrder"
             @removeOrder="handleRemoveOrder"
         ></order-items>
@@ -23,7 +24,7 @@
         components: {
             OrderItems
         },
-        props: ['orders'],
+        props: ['orders', 'restoId'],
         data() {
             return {
                 orderData: []
@@ -34,7 +35,7 @@
         },
         methods: {
             handleCompleteOrder(order) {
-                let orderId = {id: order.id};
+                let orderItem = {order: order};
                 let scop = this;
                 Swal.fire({
                     title: 'Do you want to complete order?',
@@ -44,7 +45,7 @@
                     cancelButtonColor: '#d33',
                 }).then((result) => {
                     if (result.value) {
-                        axios.post('/order/complete', orderId).then(function(response) {
+                        axios.post('/order/complete', orderItem).then(function(response) {
                             if(response.status == 200) {
                                 Swal.fire({
                                 icon: 'success',
@@ -83,9 +84,7 @@
                                 title: '',
                                 text: response.data.message,
                             }).then((result) => {
-                                scop.orderData = scop.orderData.filter(localOrder => {
-                                    return localOrder.id !== order.id
-                                })
+                                window.location.reload();
                             })
                         }).catch(function(error) {
                             console.log(error);
